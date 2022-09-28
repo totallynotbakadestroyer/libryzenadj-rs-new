@@ -2,6 +2,13 @@
 name = "libryzenadj-sys"
 version = "0.11.1"
 edition = "2021"
+license = "LGPL-3.0"
+description = "Low-level bindings for the to libryzenadj"
+readme = "README.md"
+homepage = "https://gitlab.com/dragonn/libryzenadj-rs"
+repository = "https://gitlab.com/dragonn/libryzenadj-rs"
+keywords = ["ryzen", "msr", "cpu"]
+categories = ["development-tools::ffi", "os"]
 
 [dependencies]
 

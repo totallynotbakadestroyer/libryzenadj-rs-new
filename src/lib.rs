@@ -14,6 +14,18 @@ pub enum RyzenAdjError {
     GetNaN,
     #[error("ryzenadj familly: {0} is not know")]
     UnknowFamily(i32),
+    #[error("ryzenadj adj familly not supported")]
+    AdjFamilyNotSupported,
+    #[error("ryzenadj adj memory access error")]
+    AdjMemoryAccessError,
+    #[error("ryzenadj adj smu rejected")]
+    AdjSmuRejected,
+    #[error("ryzenadj adj smu timeout")]
+    AdjSmuTimeout,
+    #[error("ryzenadj adj smu unsupported")]
+    AdjSmuUnsupported,
+    #[error("ryzenadj adj unknow error {0}")]
+    AdjUnknowError(i32),
 }
 
 pub type RyzenAdjResult<T> = Result<T, RyzenAdjError>;
@@ -74,6 +86,18 @@ impl RyzenAdj {
             Err(RyzenAdjError::GetNaN)
         } else {
             Ok(value)
+        }
+    }
+
+    fn adj_code(code: i32) -> RyzenAdjResult<()> {
+        match code {
+            0 => Ok(()),
+            libryzenadj_sys::ADJ_ERR_FAM_UNSUPPORTED => Err(RyzenAdjError::AdjFamilyNotSupported),
+            libryzenadj_sys::ADJ_ERR_MEMORY_ACCESS => Err(RyzenAdjError::AdjMemoryAccessError),
+            libryzenadj_sys::ADJ_ERR_SMU_REJECTED => Err(RyzenAdjError::AdjSmuRejected),
+            libryzenadj_sys::ADJ_ERR_SMU_TIMEOUT => Err(RyzenAdjError::AdjSmuTimeout),
+            libryzenadj_sys::ADJ_ERR_SMU_UNSUPPORTED => Err(RyzenAdjError::AdjSmuUnsupported),
+            _ => Err(RyzenAdjError::AdjUnknowError(code)),
         }
     }
 
@@ -317,6 +341,180 @@ impl RyzenAdj {
         self.is_init_table()?;
         Self::is_nan(unsafe { libryzenadj_sys::get_vrmsocmax_current_value(self.ryzen_adj) })
     }
+
+    pub fn set_apu_skin_temp_limit(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_apu_skin_temp_limit(self.ryzen_adj, value) })
+    }
+
+    pub fn set_apu_slow_limit(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_apu_slow_limit(self.ryzen_adj, value) })
+    }
+
+    pub fn set_coall(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_coall(self.ryzen_adj, value) })
+    }
+
+    pub fn set_cogfx(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_coall(self.ryzen_adj, value) })
+    }
+
+    pub fn set_coper(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_coall(self.ryzen_adj, value) })
+    }
+
+    pub fn set_dgpu_skin_temp_limit(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_coall(self.ryzen_adj, value) })
+    }
+
+    pub fn set_enable_oc(&self) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_enable_oc(self.ryzen_adj) })
+    }
+
+    pub fn set_disable_oc(&self) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_disable_oc(self.ryzen_adj) })
+    }
+
+    pub fn set_fast_limit(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_fast_limit(self.ryzen_adj, value) })
+    }
+
+    pub fn set_gfx_clk(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_gfx_clk(self.ryzen_adj, value) })
+    }
+
+    pub fn set_max_fclk_freq(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_max_fclk_freq(self.ryzen_adj, value) })
+    }
+
+    pub fn set_max_gfxclk_freq(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_max_gfxclk_freq(self.ryzen_adj, value) })
+    }
+
+    pub fn set_max_lclk(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_max_lclk(self.ryzen_adj, value) })
+    }
+
+    pub fn set_max_performance(&self) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_max_performance(self.ryzen_adj) })
+    }
+
+    pub fn set_max_socclk_freq(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_max_socclk_freq(self.ryzen_adj, value) })
+    }
+
+    pub fn set_max_vcn(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_max_vcn(self.ryzen_adj, value) })
+    }
+
+    pub fn set_min_fclk_freq(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_min_fclk_freq(self.ryzen_adj, value) })
+    }
+
+    pub fn set_min_gfxclk_freq(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_min_gfxclk_freq(self.ryzen_adj, value) })
+    }
+
+    pub fn set_min_lclk(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_min_lclk(self.ryzen_adj, value) })
+    }
+
+    pub fn set_min_socclk_freq(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_min_socclk_freq(self.ryzen_adj, value) })
+    }
+
+    pub fn set_min_vcn(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_min_vcn(self.ryzen_adj, value) })
+    }
+
+    pub fn set_oc_clk(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_oc_clk(self.ryzen_adj, value) })
+    }
+
+    pub fn set_oc_volt(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_oc_volt(self.ryzen_adj, value) })
+    }
+
+    pub fn set_per_core_oc_clk(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_per_core_oc_clk(self.ryzen_adj, value) })
+    }
+
+    pub fn set_power_saving(&self) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_power_saving(self.ryzen_adj) })
+    }
+
+    pub fn set_prochot_deassertion_ramp(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe {
+            libryzenadj_sys::set_prochot_deassertion_ramp(self.ryzen_adj, value)
+        })
+    }
+
+    pub fn set_psi0_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_psi0_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_psi0soc_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_psi0soc_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_psi3cpu_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_psi3cpu_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_psi3gfx_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_psi3gfx_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_skin_temp_power_limit(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_skin_temp_power_limit(self.ryzen_adj, value) })
+    }
+
+    pub fn set_slow_limit(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_slow_limit(self.ryzen_adj, value) })
+    }
+
+    pub fn set_slow_time(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_slow_time(self.ryzen_adj, value) })
+    }
+
+    pub fn set_stapm_limit(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_stapm_limit(self.ryzen_adj, value) })
+    }
+
+    pub fn set_stapm_time(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_stapm_time(self.ryzen_adj, value) })
+    }
+
+    pub fn set_tctl_temp(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_tctl_temp(self.ryzen_adj, value) })
+    }
+
+    pub fn set_vrm_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_vrm_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_vrmcvip_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_vrmcvip_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_vrmgfx_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_vrmgfx_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_vrmgfxmax_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_vrmgfxmax_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_vrmmax_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_vrmmax_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_vrmsoc_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_vrmsoc_current(self.ryzen_adj, value) })
+    }
+
+    pub fn set_vrmsocmax_current(&self, value: u32) -> RyzenAdjResult<()> {
+        Self::adj_code(unsafe { libryzenadj_sys::set_vrmsocmax_current(self.ryzen_adj, value) })
+    }
 }
 
 impl Drop for RyzenAdj {
@@ -441,5 +639,14 @@ mod tests {
         println!("vrmsoc_current_value: {}", vrmsoc_current_value);
         println!("vrmsocmax_current: {}", vrmsocmax_current);
         println!("vrmsocmax_current_value: {}", vrmsocmax_current_value);
+
+        ryzen_adj.set_disable_oc().unwrap();
+        //ryzen_adj.set_enable_oc().unwrap();
+
+        for i in (1047565..u32::MAX).step_by(100) {
+            println!("setting coall: {}", i);
+            ryzen_adj.set_coall(i).unwrap();
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        }
     }
 }
