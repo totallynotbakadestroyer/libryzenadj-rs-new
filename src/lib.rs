@@ -4,54 +4,76 @@ use thiserror::Error;
 
 pub use libryzenadj_sys;
 
+/// Enumerates the possible errors returned from ryzenadj
 #[derive(Error, Debug)]
 pub enum RyzenAdjError {
+    ///ryzenadj struct init failed, provides `errno` returned by the library
     #[error("ryzenadj init failed: {} {}", errno, errno.0)]
     InitError { errno: Errno },
+    ///this error is returned when ryzenadj can not read out values from msr, setting values might still work
     #[error("ryzenadj table init failed: {0}, set functions might still work")]
     InitTableError(i32),
+    ///reading given value returned a NaN float
     #[error("ryzenadj get returned NaN")]
     GetNaN,
+    ///given cpu family is not supported by this crate
     #[error("ryzenadj familly: {0} is not know")]
     UnknowFamily(i32),
-    #[error("ryzenadj adj familly not supported")]
+    ///given cpu family is not supported by ryzenadj
+    #[error("ryzenadj adj family not supported")]
     AdjFamilyNotSupported,
+    ///ryzenadj encured a memory access error
     #[error("ryzenadj adj memory access error")]
     AdjMemoryAccessError,
+    ///the cpu smu rejected the given value
     #[error("ryzenadj adj smu rejected")]
     AdjSmuRejected,
+    ///the cpu smu timeout out when trying to set the value
     #[error("ryzenadj adj smu timeout")]
     AdjSmuTimeout,
+    ///the cpu smu responed with setting this value is unsupported
     #[error("ryzenadj adj smu unsupported")]
     AdjSmuUnsupported,
+    ///unknow error ocured when tring to set give value
     #[error("ryzenadj adj unknow error {0}")]
     AdjUnknowError(i32),
 }
-
+///libryzenadj result type returned by all available functions
 pub type RyzenAdjResult<T> = Result<T, RyzenAdjError>;
 
+///Struct holding access to an open instance of ryzenadj
 pub struct RyzenAdj {
     ryzen_adj: libryzenadj_sys::ryzen_access,
     init_table_result: Option<i32>,
 }
 
+///Enumerates supported CPU families
 #[derive(Debug, TryFromPrimitive)]
 #[non_exhaustive]
 #[repr(i32)]
 pub enum RyzenFamily {
+    ///Unknow CPU family
     Unknow = libryzenadj_sys::ryzen_family_FAM_UNKNOWN,
+    ///Ryzen 2XXX and a few Athlons
     Raven = libryzenadj_sys::ryzen_family_FAM_RAVEN,
+    ///Ryzen 3XXX and a few Athlons
     Picassso = libryzenadj_sys::ryzen_family_FAM_PICASSO,
+    ///Ryzen 4XXX
     Renoir = libryzenadj_sys::ryzen_family_FAM_RENOIR,
+    ///Ryzen 5XXX APUs only
     Cezanne = libryzenadj_sys::ryzen_family_FAM_CEZANNE,
+    ///a few lower power Ryzen 3XXX
     Dali = libryzenadj_sys::ryzen_family_FAM_DALI,
+    ///a few lower power Ryzen 5XXX
     Lucienne = libryzenadj_sys::ryzen_family_FAM_LUCIENNE,
+    ///Athlon 4XXX?
     Vangogh = libryzenadj_sys::ryzen_family_FAM_VANGOGH,
+    ///Ryzen 6XXX
     Rembrandt = libryzenadj_sys::ryzen_family_FAM_REMBRANDT,
-    End = libryzenadj_sys::ryzen_family_FAM_END,
 }
 
 impl RyzenAdj {
+    ///Returns a new RyzenAdj instance
     pub fn new() -> RyzenAdjResult<Self> {
         let ryzen_adj = unsafe { libryzenadj_sys::init_ryzenadj() };
 
@@ -100,7 +122,7 @@ impl RyzenAdj {
             _ => Err(RyzenAdjError::AdjUnknowError(code)),
         }
     }
-
+    ///Refresh current readed values from the CPU
     pub fn refresh(&self) -> RyzenAdjResult<()> {
         self.is_init_table()?;
         let result = unsafe { libryzenadj_sys::refresh_table(self.ryzen_adj) };
@@ -110,7 +132,7 @@ impl RyzenAdj {
             Ok(())
         }
     }
-
+    ///Gets the APU skin temperature limit
     pub fn get_apu_skin_temp_limit(&self) -> RyzenAdjResult<f32> {
         self.is_init_table()?;
         Self::is_nan(unsafe { libryzenadj_sys::get_apu_skin_temp_limit(self.ryzen_adj) })
