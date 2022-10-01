@@ -2,16 +2,17 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    let dst = cmake::Config::new("RyzenAdj")
-        .define("BUILD_SHARED_LIBS", "OFF")
-        .profile("Release")
-        .build_target("libryzenadj")
-        .build();
-    //panic!("dst: {:?}", dst.display());
-    println!("cargo:rustc-link-search=native={}/build", dst.display());
-    println!("cargo:rustc-link-lib=static=ryzenadj");
-    println!("cargo:rustc-link-lib=dylib=pci");
-
+    if env::var("DOCS_RS").unwrap_or_else(|_| "0".to_string()) == "0" {
+        let dst = cmake::Config::new("RyzenAdj")
+            .define("BUILD_SHARED_LIBS", "OFF")
+            .profile("Release")
+            .build_target("libryzenadj")
+            .build();
+        //panic!("dst: {:?}", dst.display());
+        println!("cargo:rustc-link-search=native={}/build", dst.display());
+        println!("cargo:rustc-link-lib=static=ryzenadj");
+        println!("cargo:rustc-link-lib=dylib=pci");
+    }
     println!("cargo:rerun-if-changed=wrapper.h");
 
     let bindings = bindgen::Builder::default()
