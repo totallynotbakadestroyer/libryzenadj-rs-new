@@ -1,3 +1,7 @@
 [submodule "libryzenadj-sys/RyzenAdj"]
 	path = libryzenadj-sys/RyzenAdj
 	url = https://github.com/dragonnn/RyzenAdj
+[submodule "RyzenAdj"]
+	url = https://github.com/FlyGoat/RyzenAdj
+[submodule "./RyzenAdj"]
+	url = https://github.com/FlyGoat/RyzenAdj
