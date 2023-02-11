@@ -324,7 +324,7 @@ impl RyzenAdj {
     /// Gets tctl temp value
     pub fn get_tctl_temp_value(&self) -> RyzenAdjResult<f32> {
         self.is_init_table()?;
-        Self::is_nan(unsafe { libryzenadj_sys::get_tctl_temp(self.ryzen_adj) })
+        Self::is_nan(unsafe { libryzenadj_sys::get_tctl_temp_value(self.ryzen_adj) })
     }
     /// Gets vrm current
     pub fn get_vrm_current(&self) -> RyzenAdjResult<f32> {
