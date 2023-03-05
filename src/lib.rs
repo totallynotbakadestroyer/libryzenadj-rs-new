@@ -404,13 +404,13 @@ impl RyzenAdj {
     /// the formula for per core Curve Optimizer (on a single CCD mobile APU) is <core number> * 0x100000 + ((0x100000 + <value>) & 0xFFFFF).
     /// for example to set -10 on core no.2 and -5 on core no.3 it's:
     pub unsafe fn set_unsafe_coper(&self, value: u32) -> RyzenAdjResult<()> {
-        Self::adj_code(libryzenadj_sys::set_coall(self.ryzen_adj, value))
+        Self::adj_code(libryzenadj_sys::set_coper(self.ryzen_adj, value))
     }
 
     /// Sets the all core curve optimiser
     pub fn set_coall(&self, value: i32) -> RyzenAdjResult<()> {
         if (-30..=30).contains(&value) {
-            let value = 0x100000 - value;
+            let value = 0x100000 + value;
             Self::adj_code(unsafe { libryzenadj_sys::set_coall(self.ryzen_adj, value as u32) })
         } else {
             Err(RyzenAdjError::AdjValueOutOfRange)
@@ -420,8 +420,8 @@ impl RyzenAdj {
     /// Sets the per core curve optimiser
     pub fn set_coper(&self, core: u32, value: i32) -> RyzenAdjResult<()> {
         if (-30..=30).contains(&value) {
-            let value = (core * 0x100000) as i32 - value;
-            Self::adj_code(unsafe { libryzenadj_sys::set_coall(self.ryzen_adj, value as u32) })
+            let value = (core * 0x100000) as i32 + value;
+            Self::adj_code(unsafe { libryzenadj_sys::set_coper(self.ryzen_adj, value as u32) })
         } else {
             Err(RyzenAdjError::AdjValueOutOfRange)
         }
