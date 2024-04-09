@@ -1,6 +1,6 @@
 [package]
 name = "libryzenadj"
-version = "0.14.0"
+version = "0.15.0"
 edition = "2021"
 license = "LGPL-3.0"
 description = "Safe bindings to libryzenadj"
@@ -13,7 +13,7 @@ categories = ["development-tools::ffi", "os"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-libryzenadj-sys = { path = "libryzenadj-sys", version = "0.14.0"}
+libryzenadj-sys = { path = "libryzenadj-sys", version = "0.15.0" }
 thiserror = "1.0.35"
 
 errno = "0.3.2"
