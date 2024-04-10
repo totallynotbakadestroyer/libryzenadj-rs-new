@@ -73,6 +73,14 @@ pub enum RyzenFamily {
     Vangogh = libryzenadj_sys::ryzen_family_FAM_VANGOGH,
     /// Ryzen 6XXX
     Rembrandt = libryzenadj_sys::ryzen_family_FAM_REMBRANDT,
+    /// Athlon 7XXX
+    Mendocino = libryzenadj_sys::ryzen_family_FAM_MENDOCINO,
+    /// Ryzen 7XXX
+    Phoenix = libryzenadj_sys::ryzen_family_FAM_PHOENIX,
+    /// Ryzen 8XXX
+    Hawkpoint = libryzenadj_sys::ryzen_family_FAM_HAWKPOINT,
+    /// Zen 5 APU
+    Strixpoint = libryzenadj_sys::ryzen_family_FAM_STRIXPOINT,
 }
 
 impl RyzenAdj {

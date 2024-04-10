@@ -9,11 +9,12 @@ homepage = "https://gitlab.com/dragonn/libryzenadj-rs"
 repository = "https://gitlab.com/dragonn/libryzenadj-rs"
 keywords = ["ryzen", "msr", "cpu"]
 categories = ["development-tools::ffi", "os"]
+links = "ryzenadj"
 
 [dependencies]
 
 
 [build-dependencies]
-bindgen = "0.66.0"
-cmake = "0.1"
+bindgen = "0.69.4"
+cmake = "0.1.50"
 patch = "0.7.0"
